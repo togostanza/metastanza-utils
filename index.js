@@ -125,11 +125,22 @@ export function downloadPngMenuItem(stanza, filename) {
   };
 }
 
-export function appendCustomCss(stanza, CustomCssUrl) {
-  const link = document.createElement("link");
-  stanza.root.appendChild(link);
-  link.setAttribute("rel", "stylesheet");
-  link.setAttribute("href", CustomCssUrl);
+export function appendCustomCss(stanza, customCssUrl) {
+  const links = stanza.root.querySelectorAll(
+    "link[data-togostanza-custom-css]"
+  );
+  for (const link of links) {
+    link.remove();
+  }
+
+  if (customCssUrl) {
+    const link = document.createElement("link");
+    stanza.root.appendChild(link);
+
+    link.setAttribute("rel", "stylesheet");
+    link.setAttribute("href", customCssUrl);
+    link.setAttribute("data-togostanza-custom-css", "");
+  }
 }
 
 export async function getFormatedJson(url, element, post_params) {
