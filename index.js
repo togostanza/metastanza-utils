@@ -1,4 +1,5 @@
 import * as d3 from "d3";
+import { stringify as csvStringify } from "csv-stringify/browser/esm/sync.js";
 
 function downloadImg(_svg, format, filename, root) {
   let url, img, canvas, context;
@@ -126,19 +127,14 @@ export function downloadPngMenuItem(stanza, filename) {
 }
 
 function json2csv(json) {
-  var header = Object.keys(json[0]).join(",") + "\n";
+  const conlumnIds = Object.keys(json[0]);
 
-  var body = json
-    .map(function (d) {
-      return Object.keys(d)
-        .map(function (key) {
-          return d[key];
-        })
-        .join(",");
-    })
-    .join("\n");
+  const array = [
+    conlumnIds,
+    ...json.map((row) => conlumnIds.map((columnId) => row[columnId])),
+  ];
 
-  return header + body;
+  return csvStringify(array);
 }
 
 const downloadBlob = (blob, fileName) => {
