@@ -126,17 +126,6 @@ export function downloadPngMenuItem(stanza, filename) {
   };
 }
 
-function json2csv(json) {
-  const conlumnIds = Object.keys(json[0]);
-
-  const array = [
-    conlumnIds,
-    ...json.map((row) => conlumnIds.map((columnId) => row[columnId])),
-  ];
-
-  return csvStringify(array);
-}
-
 const downloadBlob = (blob, fileName) => {
   const link = document.createElement("a");
   link.download = fileName;
@@ -165,9 +154,20 @@ export function downloadCSVMenuItem(stanza, filename, data) {
     type: "item",
     label: "Download CSV",
     handler: () => {
-      const csv = json2csv(data);
-      const bom = new Uint8Array([0xef, 0xbb, 0xbf]);
-      const blob = new Blob([bom, csv], { type: "text/csv" });
+      const csv = csvStringify(data, { header: true, bom: true });
+      const blob = new Blob([csv], { type: "text/csv" });
+      downloadBlob(blob, filename);
+    },
+  };
+}
+
+export function downloadTSVMenuItem(stanza, filename, data) {
+  return {
+    type: "item",
+    label: "Download TSV",
+    handler: () => {
+      const tsv = csvStringify(data, { header: true, delimiter: "\t" });
+      const blob = new Blob([tsv], { type: "text/tsv" });
       downloadBlob(blob, filename);
     },
   };
