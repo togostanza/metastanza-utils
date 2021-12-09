@@ -156,7 +156,7 @@ export function downloadCSVMenuItem(stanza, filename, data) {
     handler: () => {
       const csv = csvStringify(data, { header: true, bom: true });
       const blob = new Blob([csv], { type: "text/csv" });
-      downloadBlob(blob, filename);
+      downloadBlob(blob, filename + ".csv");
     },
   };
 }
@@ -166,9 +166,13 @@ export function downloadTSVMenuItem(stanza, filename, data) {
     type: "item",
     label: "Download TSV",
     handler: () => {
-      const tsv = csvStringify(data, { header: true, delimiter: "\t" });
+      const tsv = csvStringify(data, {
+        header: true,
+        bom: true,
+        delimiter: "\t",
+      });
       const blob = new Blob([tsv], { type: "text/tsv" });
-      downloadBlob(blob, filename);
+      downloadBlob(blob, filename + ".tsv");
     },
   };
 }
