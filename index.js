@@ -1,5 +1,6 @@
 import * as d3 from "d3";
 import { stringify as csvStringify } from "csv-stringify/browser/esm/sync.js";
+import { format as formatDate } from "date-fns";
 
 function downloadImg(_svg, format, filename, root) {
   let url, img, canvas, context;
@@ -92,11 +93,15 @@ function downloadImg(_svg, format, filename, root) {
   }
 }
 
+function filenameWithTimestamp(prefix) {
+  return prefix + "-" + formatDate(new Date(), "yyyyMMdd-HHmmss");
+}
+
 export function dividerMenuItem() {
   return { type: "divider" };
 }
 
-export function downloadSvgMenuItem(stanza, filename) {
+export function downloadSvgMenuItem(stanza, filenamePrefix) {
   return {
     type: "item",
     label: "Download SVG",
@@ -104,14 +109,14 @@ export function downloadSvgMenuItem(stanza, filename) {
       downloadImg(
         stanza.root.querySelector("svg"),
         "svg",
-        filename,
+        filenameWithTimestamp(filenamePrefix),
         stanza.root
       );
     },
   };
 }
 
-export function downloadPngMenuItem(stanza, filename) {
+export function downloadPngMenuItem(stanza, filenamePrefix) {
   return {
     type: "item",
     label: "Download PNG",
@@ -119,7 +124,7 @@ export function downloadPngMenuItem(stanza, filename) {
       downloadImg(
         stanza.root.querySelector("svg"),
         "png",
-        filename,
+        filenameWithTimestamp(filenamePrefix),
         stanza.root
       );
     },
@@ -136,7 +141,7 @@ const downloadBlob = (blob, fileName) => {
   URL.revokeObjectURL(link.href);
 };
 
-export function downloadJSONMenuItem(stanza, filename, data) {
+export function downloadJSONMenuItem(stanza, filenamePrefix, data) {
   return {
     type: "item",
     label: "Download JSON",
@@ -144,24 +149,24 @@ export function downloadJSONMenuItem(stanza, filename, data) {
       const blob = new Blob([JSON.stringify(data, null, "  ")], {
         type: "application/json",
       });
-      downloadBlob(blob, filename);
+      downloadBlob(blob, filenameWithTimestamp(filenamePrefix) + ".json");
     },
   };
 }
 
-export function downloadCSVMenuItem(stanza, filename, data) {
+export function downloadCSVMenuItem(stanza, filenamePrefix, data) {
   return {
     type: "item",
     label: "Download CSV",
     handler: () => {
       const csv = csvStringify(data, { header: true, bom: true });
       const blob = new Blob([csv], { type: "text/csv" });
-      downloadBlob(blob, filename + ".csv");
+      downloadBlob(blob, filenameWithTimestamp(filenamePrefix) + ".csv");
     },
   };
 }
 
-export function downloadTSVMenuItem(stanza, filename, data) {
+export function downloadTSVMenuItem(stanza, filenamePrefix, data) {
   return {
     type: "item",
     label: "Download TSV",
@@ -172,7 +177,7 @@ export function downloadTSVMenuItem(stanza, filename, data) {
         delimiter: "\t",
       });
       const blob = new Blob([tsv], { type: "text/tsv" });
-      downloadBlob(blob, filename + ".tsv");
+      downloadBlob(blob, filenameWithTimestamp(filenamePrefix) + ".tsv");
     },
   };
 }
