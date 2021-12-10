@@ -182,7 +182,7 @@ export function downloadTSVMenuItem(stanza, filenamePrefix, data) {
   };
 }
 
-export function copyHTMLSnippetToClipboard(stanza) {
+export function copyHTMLSnippetToClipboardMenuItem(stanza) {
   return {
     type: "item",
     label: "Copy HTML snippet to clipboard",
