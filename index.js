@@ -1,5 +1,5 @@
 import * as d3 from "d3";
-import { stringify as csvStringify } from "csv-stringify/browser/esm/sync.js";
+import { stringify as csvStringify } from "csv-stringify/browser/esm/sync";
 import { format as formatDate } from "date-fns";
 
 function downloadImg(_svg, format, filename, root) {

@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "main": "index.js",
   "dependencies": {
-    "csv-stringify": "^6.0.4",
+    "csv-stringify": "^6.0.5",
     "d3": "^7.0.1",
     "date-fns": "^2.27.0"
   }
