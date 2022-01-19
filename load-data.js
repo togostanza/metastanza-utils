@@ -33,8 +33,8 @@ function displayApiError(element, error) {
   p.append("span").text(error);
 }
 
-async function loadJSON(url, accept = "application/json") {
-  const res = await fetch(url, { headers: { Accept: accept } });
+async function loadJSON(url, requestInit) {
+  const res = await fetch(url, requestInit);
   return await res.json();
 }
 
@@ -52,8 +52,15 @@ function sparql2table(json) {
   });
 }
 
-async function loadSPARQL(url) {
-  const json = await loadJSON(url, "application/sparql-results+json");
+async function loadSPARQL(url, requestInit) {
+  const requestInit = {
+    headers: {
+      Accept: "application/sparql-results+json",
+    },
+    ...requestInit,
+  };
+
+  const json = await loadJSON(url, requestInit);
   return sparql2table(json);
 }
 
@@ -71,16 +78,29 @@ function getLoader(type) {
   }
 }
 
-export default async function loadData(url, type = "json", mainElement = null) {
+export default async function loadData(
+  url,
+  type = "json",
+  mainElement = null,
+  timeout = 600_000 // TODO: Really OK?
+) {
   const loader = getLoader(type);
   let data = null;
+
+  const controller = new AbortController();
+  const requestInit = {
+    signal: controller.signal,
+  };
+
+  const timer = setTimeout(() => {
+    controller.abort();
+  }, timeout);
 
   try {
     if (mainElement) {
       showLoadingIcon(mainElement);
     }
-
-    data = await loader(url);
+    data = await loader(url, requestInit);
   } catch (error) {
     if (mainElement) {
       const detail =
@@ -96,6 +116,7 @@ export default async function loadData(url, type = "json", mainElement = null) {
     if (mainElement) {
       hideLoadingIcon(mainElement);
     }
+    clearTimeout(timer);
   }
 
   return data;
