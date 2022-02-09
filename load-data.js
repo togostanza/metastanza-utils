@@ -82,7 +82,7 @@ export default async function loadData(
   url,
   type = "json",
   mainElement = null,
-  timeout = 600_000 // TODO: Really OK?
+  timeout = 10 * 60 * 1000
 ) {
   const loader = getLoader(type);
   let data = null;
