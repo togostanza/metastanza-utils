@@ -182,21 +182,6 @@ export function downloadTSVMenuItem(stanza, filenamePrefix, data) {
   };
 }
 
-export function copyHTMLSnippetToClipboardMenuItem(stanza) {
-  return {
-    type: "item",
-    label: "Copy HTML snippet to clipboard",
-    handler: async () => {
-      const script = document.createElement("script");
-      script.type = "module";
-      script.src = stanza.url;
-      const html = [script.outerHTML, stanza.element.outerHTML].join(" ");
-
-      await navigator.clipboard.writeText(html);
-    },
-  };
-}
-
 export function appendCustomCss(stanza, customCssUrl) {
   const links = stanza.root.querySelectorAll(
     "link[data-togostanza-custom-css]"
