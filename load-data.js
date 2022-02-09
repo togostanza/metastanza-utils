@@ -53,14 +53,14 @@ function sparql2table(json) {
 }
 
 async function loadSPARQL(url, requestInit) {
-  const requestInit = {
+  const requestInitWithHeader = {
     headers: {
       Accept: "application/sparql-results+json",
     },
     ...requestInit,
   };
 
-  const json = await loadJSON(url, requestInit);
+  const json = await loadJSON(url, requestInitWithHeader);
   return sparql2table(json);
 }
 
