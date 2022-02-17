@@ -78,12 +78,20 @@ function getLoader(type) {
   }
 }
 
+let cache = null;
+let cacheKey = null;
+
 export default async function loadData(
   url,
   type = "json",
   mainElement = null,
   timeout = 10 * 60 * 1000
 ) {
+  const _cacheKey = JSON.stringify({ url, type });
+  if (cacheKey === _cacheKey) {
+    return cache;
+  }
+
   const loader = getLoader(type);
   let data = null;
 
@@ -101,6 +109,9 @@ export default async function loadData(
       showLoadingIcon(mainElement);
     }
     data = await loader(url, requestInit);
+
+    cache = data;
+    cacheKey = _cacheKey;
   } catch (error) {
     if (mainElement) {
       const detail =
