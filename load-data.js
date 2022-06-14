@@ -5,19 +5,21 @@ async function showLoadingIcon(element) {
     d3.select(element).transition().duration(100).style("min-height", "30px");
   }
 
-  const { default: loadingIconGif } = await import("./spinner.png");
+  const main = d3.select(element)
+    .classed("main-center", true)
 
-  d3.select(element)
+  const container = d3.select(element)
     .append("div")
     .attr("class", "metastanza-loading-icon-div")
     .attr("id", "metastanza-loading-icon-div")
-    .style("position", "absolute")
-    .style("top", "10px")
-    .style("left", Math.floor(element.offsetWidth / 2) - 30 + "px")
-    .append("img")
-    .attr("class", "metastanza-loading-icon")
-    .attr("style", "width: 30px; height: auto")
-    .attr("src", loadingIconGif);
+
+    container
+    .append('div')
+    .classed('loading', true)
+
+    container
+    .append('div')
+    .classed('circle', true)
 }
 
 function hideLoadingIcon(element) {
@@ -111,6 +113,10 @@ export default async function loadData(
   try {
     if (mainElement) {
       await showLoadingIcon(mainElement);
+      while (true) {
+        await new Promise(resolve => setTimeout(resolve, 500));
+        // ...do some async work...
+      }
     }
     data = await loader(url, requestInit);
 
