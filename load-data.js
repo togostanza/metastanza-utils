@@ -1,17 +1,23 @@
 import * as d3 from "d3";
 
+let style
+
 async function showLoadingIcon(element) {
   if (element.offsetHeight < 30) {
     d3.select(element).transition().duration(100).style("min-height", "30px");
   }
 
+  const css = (key) => getComputedStyle(element).getPropertyValue(key);
+
+  const spinnerColor = css('--togostanza-loading-spinner-color');
+
   const main = d3.select(element)
     .classed("main-center", true)
 
-  const style = document.createElement('style')
+  style = document.createElement('style')
   style.setAttribute('id', 'spinner-css')
 
-  style.innerHTML = spinnerCss
+  style.innerHTML = getSpinnerCss(spinnerColor || 'grey')
   element.getRootNode().appendChild(style)
 
   const container = d3.select(element)
@@ -22,15 +28,20 @@ async function showLoadingIcon(element) {
     container
     .append('div')
     .classed('loading', true)
+
     container
     .append('div')
     .classed('circle', true)
 }
 
 function hideLoadingIcon(element) {
-  const root = element.getRootNode();
-  const style = root.querySelector('#spinner-css');
-  root.removeChild(style);
+  // const root = element.getRootNode();
+  // console.log(root);
+  // const style = root.querySelector('#spinner-css');
+  if (style) {
+    console.log(style)
+    style.remove();
+  }
   d3.select(element).select("#metastanza-loading-icon-div").remove();
 }
 
@@ -201,10 +212,10 @@ export default async function loadData(
 // }
 
 
-const spinnerCss =
-  `
+function getSpinnerCss(color) {
+  return `
   :host {
-    --LOADING_SPINNER_BACKGROUND: var(--togostanza-loading-spinner-color);
+    --LOADING_SPINNER_BACKGROUND: ${color};
     --DOT_1: rgba(255,255,255,1);
     --DOT_2: rgba(255,255,255,0.8);
     --DOT_3: rgba(255,255,255,0.6);
@@ -351,3 +362,4 @@ const spinnerCss =
     }
   }
   `
+}
