@@ -2,7 +2,7 @@ import * as d3 from "d3";
 
 let style
 
-async function showLoadingIcon(element) {
+export function showLoadingIcon(element) {
   if (element.offsetHeight < 30) {
     d3.select(element).transition().duration(100).style("min-height", "30px");
   }
@@ -34,7 +34,7 @@ async function showLoadingIcon(element) {
     .classed('circle', true)
 }
 
-function hideLoadingIcon(element) {
+export function hideLoadingIcon(element) {
   // const root = element.getRootNode();
   // console.log(root);
   // const style = root.querySelector('#spinner-css');
@@ -131,7 +131,7 @@ export default async function loadData(
 
   try {
     if (mainElement) {
-      await showLoadingIcon(mainElement);
+      showLoadingIcon(mainElement);
     }
     data = await loader(url, requestInit);
 
