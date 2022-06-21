@@ -1,26 +1,36 @@
 import * as d3 from "d3";
 
-async function showLoadingIcon(element) {
+let style;
+
+export function showLoadingIcon(element) {
   if (element.offsetHeight < 30) {
     d3.select(element).transition().duration(100).style("min-height", "30px");
   }
 
-  const { default: loadingIconGif } = await import("./spinner.png");
+  const css = (key) => getComputedStyle(element).getPropertyValue(key);
 
-  d3.select(element)
+  const spinnerColor = css("--togostanza-loading-spinner-color");
+
+  const main = d3.select(element).classed("main-center", true);
+
+  style = document.createElement("style");
+  style.setAttribute("id", "spinner-css");
+
+  style.innerHTML = getSpinnerCss(spinnerColor || "grey");
+  element.getRootNode().appendChild(style);
+
+  const container = d3
+    .select(element)
     .append("div")
     .attr("class", "metastanza-loading-icon-div")
-    .attr("id", "metastanza-loading-icon-div")
-    .style("position", "absolute")
-    .style("top", "10px")
-    .style("left", Math.floor(element.offsetWidth / 2) - 30 + "px")
-    .append("img")
-    .attr("class", "metastanza-loading-icon")
-    .attr("style", "width: 30px; height: auto")
-    .attr("src", loadingIconGif);
+    .attr("id", "metastanza-loading-icon-div");
+
+  container.append("div").classed("loading", true);
+  container.append("div").classed("circle", true);
 }
 
-function hideLoadingIcon(element) {
+export function hideLoadingIcon(element) {
+  style?.remove();
   d3.select(element).select("#metastanza-loading-icon-div").remove();
 }
 
@@ -42,7 +52,6 @@ async function loadJSON(url, requestInit) {
   return await res.json();
 }
 
-// TODO: test & improve
 function sparql2table(json) {
   const head = json.head.vars;
   const data = json.results.bindings;
@@ -110,7 +119,7 @@ export default async function loadData(
 
   try {
     if (mainElement) {
-      await showLoadingIcon(mainElement);
+      showLoadingIcon(mainElement);
     }
     data = await loader(url, requestInit);
 
@@ -137,55 +146,99 @@ export default async function loadData(
   return data;
 }
 
-// async function sparql2tree(url){
-//   const json = await loadJSON(url);
-//   const treeJson = sparql2table(json); //rootのオブジェクトが必要
-//   const rootNode = {
-//     "child_name": sparql2table(json)[0].root_name
-//   }
+function getSpinnerCss(color) {
+  return `
+  :host {
+    --loading_spinner_background: ${color};
+    --dot_1: rgba(255,255,255,1);
+    --dot_2: rgba(255,255,255,0.8);
+    --dot_3: rgba(255,255,255,0.6);
+    --dot_4: rgba(255,255,255,0.3);
+  }
 
-//   treeJson.unshift(rootNode);
-//   treeJson.forEach(data => {
-//     if(!treeJson.some(datum => data.parent_name === datum.child_name)) {
-//       console.log('親無し', data)
-//     }
-//   })
-//   return treeJson;
+  .main-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 150px;
+  }
 
-//   //test loading function
-//   const array1 = sparql2table(json); //rootのオブジェクトが必要
-//   const rootNode = {
-//     "child_name": sparql2table(json)[0].root_name
-//   }
+  .metastanza-loading-icon-div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 150px;
+    position: relative;
+  }
 
-//   array1.unshift(rootNode);
-//   array1.forEach(data => {
-//     if(!array1.some(datum => data.parent_name === datum.child_name)) {
-//       console.log('親無し', data)
-//     }
-//   })
-//   console.log("array1",array1);
+  .circle {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background-color: var(--loading_spinner_background);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
 
-//   const testData =
-//   [
-//     {
-//       "child_name": "first",
-//     },
-//     {
-//       "child_name": "second",
-//       "parent_name": "first"
-//     },
-//     {
-//       "child_name": "forth",
-//       "parent_name": "first"
-//     },
-//     {
-//       "child_name": "third",
-//       "parent_name": "second"
-//     }
-//   ]
-//   console.log('testData',testData)
+  .loading {
+    height: 3.5px;
+    width: 3.5px;
+    border-radius: 50%;
+    animation: load 1.5s infinite ease;
+    z-index: 1;
+  }
 
-//   return array1;
-//   return testData;
-// }
+  @keyframes load {
+    0%,
+    100% {
+      box-shadow: 0em -0.7em 0em 0em var(--dot_1), 0.5em -0.45em 0 0em var(--dot_4), 0.7em 0em 0 0em var(--dot_4),
+        0.45em 0.4em 0 0em var(--dot_4), 0em 0.7em 0 0em var(--dot_4),
+        -0.45em 0.45em 0 0em var(--dot_3),-0.7em 0em 0 0em var(--dot_4),
+        -0.45em -0.45em 0 0em var(--dot_2);
+    }
+    12.5% {
+      box-shadow: 0em -0.7em 0em 0em var(--dot_2), 0.5em -0.45em 0 0em var(--dot_1), 0.7em 0em 0 0em var(--dot_4),
+        0.45em 0.4em 0 0em var(--dot_4), 0em 0.7em 0 0em var(--dot_4),
+        -0.45em 0.45em 0 0em var(--dot_4),-0.7em 0em 0 0em var(--dot_4),
+        -0.45em -0.45em 0 0em var(--dot_3);
+    }
+    25% {
+      box-shadow: 0em -0.7em 0em 0em var(--dot_3), 0.5em -0.45em 0 0em var(--dot_2), 0.7em 0em 0 0em var(--dot_1),
+        0.5em 0.45em 0 0em var(--dot_4), 0em 0.7em 0 0em var(--dot_4),
+        -0.5em 0.45em 0 0em var(--dot_4),-0.7em 0em 0 0em var(--dot_4),
+        -0.5em -0.45em 0 0em var(--dot_4);
+    }
+    37.5% {
+      box-shadow: 0em -0.7em 0em 0em var(--dot_4), 0.5em -0.45em 0 0em var(--dot_3), 0.7em 0em 0 0em var(--dot_2),
+        0.5em 0.45em 0 0em var(--dot_1), 0em 0.7em 0 0em var(--dot_4),
+        -0.5em 0.45em 0 0em var(--dot_4),-0.7em 0em 0 0em var(--dot_4),
+        -0.5em -0.45em 0 0em var(--dot_4);
+    }
+    50% {
+      box-shadow: 0em -0.7em 0em 0em var(--dot_4), 0.5em -0.45em 0 0em var(--dot_4), 0.7em 0em 0 0em var(--dot_3),
+        0.5em 0.45em 0 0em var(--dot_2), 0em 0.7em 0 0em var(--dot_1),
+        -0.5em 0.45em 0 0em var(--dot_4),-0.7em 0em 0 0em var(--dot_4),
+        -0.5em -0.45em 0 0em var(--dot_4);
+    }
+    62.5% {
+      box-shadow: 0em -0.7em 0em 0em var(--dot_4), 0.5em -0.45em 0 0em var(--dot_4), 0.7em 0em 0 0em var(--dot_4),
+        0.5em 0.45em 0 0em var(--dot_3), 0em 0.7em 0 0em var(--dot_2),
+        -0.5em 0.45em 0 0em var(--dot_1),-0.7em 0em 0 0em var(--dot_4),
+        -0.5em -0.45em 0 0em var(--dot_4);
+    }
+    75% {
+      box-shadow: 0em -0.7em 0em 0em var(--dot_4), 0.5em -0.45em 0 0em var(--dot_4), 0.7em 0em 0 0em var(--dot_4),
+        0.5em 0.45em 0 0em var(--dot_4), 0em 0.7em 0 0em var(--dot_3),
+        -0.5em 0.45em 0 0em var(--dot_2),-0.7em 0em 0 0em var(--dot_1),
+        -0.5em -0.45em 0 0em var(--dot_4);
+    }
+    87.5% {
+      box-shadow: 0em -0.7em 0em 0em var(--dot_4), 0.5em -0.45em 0 0em var(--dot_4), 0.7em 0em 0 0em var(--dot_4),
+        0.5em 0.45em 0 0em var(--dot_4), 0em 0.7em 0 0em var(--dot_4),
+        -0.5em 0.45em 0 0em var(--dot_3),-0.7em 0em 0 0em var(--dot_2),
+        -0.5em -0.45em 0 0em var(--dot_1);
+    }
+  `;
+}
