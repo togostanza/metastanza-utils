@@ -1,6 +1,6 @@
 import * as d3 from "d3";
 
-let style
+let style;
 
 export function showLoadingIcon(element) {
   if (element.offsetHeight < 30) {
@@ -9,37 +9,29 @@ export function showLoadingIcon(element) {
 
   const css = (key) => getComputedStyle(element).getPropertyValue(key);
 
-  const spinnerColor = css('--togostanza-loading-spinner-color');
+  const spinnerColor = css("--togostanza-loading-spinner-color");
 
-  const main = d3.select(element)
-    .classed("main-center", true)
+  const main = d3.select(element).classed("main-center", true);
 
-  style = document.createElement('style')
-  style.setAttribute('id', 'spinner-css')
+  style = document.createElement("style");
+  style.setAttribute("id", "spinner-css");
 
-  style.innerHTML = getSpinnerCss(spinnerColor || 'grey')
-  element.getRootNode().appendChild(style)
+  style.innerHTML = getSpinnerCss(spinnerColor || "grey");
+  element.getRootNode().appendChild(style);
 
-  const container = d3.select(element)
+  const container = d3
+    .select(element)
     .append("div")
     .attr("class", "metastanza-loading-icon-div")
-    .attr("id", "metastanza-loading-icon-div")
+    .attr("id", "metastanza-loading-icon-div");
 
-    container
-    .append('div')
-    .classed('loading', true)
-
-    container
-    .append('div')
-    .classed('circle', true)
+  container.append("div").classed("loading", true);
+  container.append("div").classed("circle", true);
 }
 
 export function hideLoadingIcon(element) {
-  // const root = element.getRootNode();
-  // console.log(root);
-  // const style = root.querySelector('#spinner-css');
   if (style) {
-    console.log(style)
+    console.log(style);
     style.remove();
   }
   d3.select(element).select("#metastanza-loading-icon-div").remove();
@@ -63,7 +55,6 @@ async function loadJSON(url, requestInit) {
   return await res.json();
 }
 
-// TODO: test & improve
 function sparql2table(json) {
   const head = json.head.vars;
   const data = json.results.bindings;
@@ -157,60 +148,6 @@ export default async function loadData(
 
   return data;
 }
-
-// async function sparql2tree(url){
-//   const json = await loadJSON(url);
-//   const treeJson = sparql2table(json); //rootのオブジェクトが必要
-//   const rootNode = {
-//     "child_name": sparql2table(json)[0].root_name
-//   }
-
-//   treeJson.unshift(rootNode);
-//   treeJson.forEach(data => {
-//     if(!treeJson.some(datum => data.parent_name === datum.child_name)) {
-//       console.log('親無し', data)
-//     }
-//   })
-//   return treeJson;
-
-//   //test loading function
-//   const array1 = sparql2table(json); //rootのオブジェクトが必要
-//   const rootNode = {
-//     "child_name": sparql2table(json)[0].root_name
-//   }
-
-//   array1.unshift(rootNode);
-//   array1.forEach(data => {
-//     if(!array1.some(datum => data.parent_name === datum.child_name)) {
-//       console.log('親無し', data)
-//     }
-//   })
-//   console.log("array1",array1);
-
-//   const testData =
-//   [
-//     {
-//       "child_name": "first",
-//     },
-//     {
-//       "child_name": "second",
-//       "parent_name": "first"
-//     },
-//     {
-//       "child_name": "forth",
-//       "parent_name": "first"
-//     },
-//     {
-//       "child_name": "third",
-//       "parent_name": "second"
-//     }
-//   ]
-//   console.log('testData',testData)
-
-//   return array1;
-//   return testData;
-// }
-
 
 function getSpinnerCss(color) {
   return `
@@ -306,5 +243,5 @@ function getSpinnerCss(color) {
         -0.5em 0.45em 0 0em var(--DOT_3),-0.7em 0em 0 0em var(--DOT_2),
         -0.5em -0.45em 0 0em var(--DOT_1);
     }
-  `
+  `;
 }
