@@ -16,7 +16,7 @@ export function showLoadingIcon(element) {
   style = document.createElement("style");
   style.setAttribute("id", "spinner-css");
 
-  style.innerHTML = getSpinnerCss(spinnerColor || "grey");
+  style.innerHTML = getSpinnerCss(spinnerColor || "rgb(200,200,200)");
   element.getRootNode().appendChild(style);
 
   const container = d3
@@ -125,6 +125,7 @@ export default async function loadData(
 
     cache = data;
     cacheKey = _cacheKey;
+
   } catch (error) {
     if (mainElement) {
       const detail =
