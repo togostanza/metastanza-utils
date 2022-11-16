@@ -39,12 +39,15 @@ async function downloadImg(_svg, format, filename, root) {
   let link_style = "";
   const link = root.querySelector("link[rel='stylesheet']");
   if (link) {
-    const css = await fetch(link.getAttribute('href')).then((res)=>res.text());
+    const css = await fetch(link.getAttribute("href")).then((res) =>
+      res.text()
+    );
     link_style = css.replace(/[\r\n]/g, "");
   }
 
   const tmp = svg.node().outerHTML.match(/^([^>]+>)([\s\S]+)$/);
-  const string = tmp[1] + "<style>svg{" + style + "}" + link_style + "</style>" + tmp[2];
+  const string =
+    tmp[1] + "<style>svg{" + style + "}" + link_style + "</style>" + tmp[2];
   const w = parseInt(svg.style("width"));
   const h = parseInt(svg.style("height"));
 
