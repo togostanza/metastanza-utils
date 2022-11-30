@@ -30,6 +30,7 @@ export function showLoadingIcon(element) {
 }
 
 export function hideLoadingIcon(element) {
+  d3.select(element).classed("main-center", false);
   style?.remove();
   d3.select(element).select("#metastanza-loading-icon-div").remove();
 }
