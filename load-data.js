@@ -84,6 +84,12 @@ async function loadSPARQL(url, requestInit) {
   return sparql2table(json);
 }
 
+async function loadElasticsearch(url, requestInit) {
+  const json = await fetch(url, requestInit).then((res) => res.json());
+
+  return json.hits.hits.map((hit) => hit._source);
+}
+
 function getLoader(type) {
   switch (type) {
     case "tsv":
@@ -92,6 +98,8 @@ function getLoader(type) {
       return withAcceptHeader(d3.csv, "text/csv");
     case "sparql-results-json":
       return withAcceptHeader(loadSPARQL, "application/sparql-results+json");
+    case "elasticsearch":
+      return withAcceptHeader(loadElasticsearch, "application/json");
     case "json":
     default:
       return withAcceptHeader(loadJSON, "application/json");
