@@ -92,6 +92,8 @@ async function loadElasticsearch(url, requestInit) {
 
 function getLoader(type) {
   switch (type) {
+    case "text":
+      return withAcceptHeader(d3.text, "text/javascript");
     case "tsv":
       return withAcceptHeader(d3.tsv, "text/tab-separated-values");
     case "csv":
