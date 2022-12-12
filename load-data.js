@@ -30,6 +30,7 @@ export function showLoadingIcon(element) {
 }
 
 export function hideLoadingIcon(element) {
+  d3.select(element).classed("main-center", false);
   style?.remove();
   d3.select(element).select("#metastanza-loading-icon-div").remove();
 }
@@ -47,9 +48,21 @@ function displayApiError(element, error) {
   p.append("span").text(error);
 }
 
-async function loadJSON(url, requestInit) {
-  const res = await fetch(url, requestInit);
-  return await res.json();
+function withAcceptHeader(fetcher, accept) {
+  return (url, requestInit) => {
+    const requestInitWithHeader = {
+      headers: {
+        Accept: accept,
+      },
+      ...requestInit,
+    };
+
+    return fetcher(url, requestInitWithHeader);
+  };
+}
+
+function loadJSON(url, requestInit) {
+  return fetch(url, requestInit).then((res) => res.json());
 }
 
 function sparql2table(json) {
@@ -66,28 +79,30 @@ function sparql2table(json) {
 }
 
 async function loadSPARQL(url, requestInit) {
-  const requestInitWithHeader = {
-    headers: {
-      Accept: "application/sparql-results+json",
-    },
-    ...requestInit,
-  };
+  const json = await fetch(url, requestInit).then((res) => res.json());
 
-  const json = await loadJSON(url, requestInitWithHeader);
   return sparql2table(json);
+}
+
+async function loadElasticsearch(url, requestInit) {
+  const json = await fetch(url, requestInit).then((res) => res.json());
+
+  return json.hits.hits.map((hit) => hit._source);
 }
 
 function getLoader(type) {
   switch (type) {
     case "tsv":
-      return d3.tsv;
+      return withAcceptHeader(d3.tsv, "text/tab-separated-values");
     case "csv":
-      return d3.csv;
+      return withAcceptHeader(d3.csv, "text/csv");
     case "sparql-results-json":
-      return loadSPARQL;
+      return withAcceptHeader(loadSPARQL, "application/sparql-results+json");
+    case "elasticsearch":
+      return withAcceptHeader(loadElasticsearch, "application/json");
     case "json":
     default:
-      return loadJSON;
+      return withAcceptHeader(loadJSON, "application/json");
   }
 }
 
