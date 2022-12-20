@@ -123,11 +123,21 @@ export default async function loadData(
   url,
   type = "json",
   mainElement = null,
-  timeout = 10 * 60 * 1000
+  timeout = 10 * 60 * 1000,
+  limit = null,
+  offset = null
 ) {
-  const _cacheKey = JSON.stringify({ url, type });
+  const _cacheKey = JSON.stringify({ url, type, limit, offset });
   if (cacheKey === _cacheKey) {
     return cache;
+  }
+
+  const u = new URL(url);
+  if (limit) {
+    u.searchParams.set(type === "elasticsearch" ? "size" : "limit", limit);
+  }
+  if (offset) {
+    u.searchParams.set(type === "elasticsearch" ? "from" : "offset", offset);
   }
 
   const loader = getLoader(type);
@@ -146,7 +156,7 @@ export default async function loadData(
     if (mainElement) {
       showLoadingIcon(mainElement);
     }
-    data = await loader(url, requestInit);
+    data = await loader(u, requestInit);
 
     cache = data;
     cacheKey = _cacheKey;
