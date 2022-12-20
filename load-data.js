@@ -11,18 +11,20 @@ export function showLoadingIcon(element) {
   const spinnerBgColor = css("--togostanza-loading_spinner-bg_color");
   const spinnerColor = css("--togostanza-loading_spinner-color");
 
-
   style = document.createElement("style");
   style.setAttribute("id", "spinner-css");
 
-  style.innerHTML = getSpinnerCss(spinnerBgColor || "rgb(200,200,200)",spinnerColor || "#fff");
+  style.innerHTML = getSpinnerCss(
+    spinnerBgColor || "rgb(200,200,200)",
+    spinnerColor || "#fff"
+  );
   element.getRootNode().appendChild(style);
 
   const container = d3
-  .select(element)
-  .append("div")
-  .classed("metastanza-loading-icon-div", true)
-  .attr("id", "metastanza-loading-icon-div");
+    .select(element)
+    .append("div")
+    .classed("metastanza-loading-icon-div", true)
+    .attr("id", "metastanza-loading-icon-div");
 
   const wrap = container.append("div").classed("spinner-wrap", true);
   const circle = wrap.append("div").classed("circle", true);
@@ -148,7 +150,6 @@ export default async function loadData(
 
     cache = data;
     cacheKey = _cacheKey;
-
   } catch (error) {
     if (mainElement) {
       const detail =
