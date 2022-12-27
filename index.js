@@ -9,18 +9,15 @@ async function downloadImg(_svg, format, filename, root) {
 
   svg.attr("version", 1.1).attr("xmlns", "http://www.w3.org/2000/svg");
 
-  let style = "";
-  if (root.host && root.querySelector("style")) {
-    style += root
-      .querySelector("style")
-      .innerHTML.replace(/[\r\n]/g, "")
-      .match(/^\s*:host\s*{(.+)}\s*$/)[1];
-  }
-
-  for (let styleSheet of document.styleSheets) {
-    if (styleSheet.cssRules[0].selectorText === root.host.nodeName.toLowerCase()){
-      style += styleSheet.cssRules[0].cssText.split("{")[1].split("}")[0]
+  let hostStyle = root.querySelector("style").innerHTML;
+  const styleWithCustom = hostStyle.match(/(--)[^\,\:\)]+/g).map(name => {
+    return { [name]: getComputedStyle(root.host.stanzaInstance.element).getPropertyValue(name) };
     }
+  )
+
+  let style = "";
+  for (let styleSheet of styleWithCustom) {
+    style += `${Object.keys(styleSheet).toString()}:${Object.values(styleSheet).toString()}; `;
   }
 
   let link_style = "";
