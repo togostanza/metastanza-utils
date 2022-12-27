@@ -15,7 +15,7 @@ export function showLoadingIcon(element) {
   style.setAttribute("id", "spinner-css");
 
   style.innerHTML = getSpinnerCss(
-    spinnerBgColor || "rgb(200,200,200)",
+    spinnerBgColor || "rgba(0,0,0,0.2)",
     spinnerColor || "#fff"
   );
   element.getRootNode().appendChild(style);
