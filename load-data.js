@@ -119,7 +119,8 @@ function getLoader(type) {
 let cache = null;
 let cacheKey = null;
 
-export default async function loadData(
+// NOTE: This function is a wrapper function to allow loadData() to support both keyword arguments and Option Object patterns. This function will be removed after all stanzas that depend on this function have been modified to use the Option Object pattern. After this function is removed, the current _loadData() will become loadData() itself and will be default exported.
+export default function loadData(
   url,
   type = "json",
   mainElement = null,
@@ -127,6 +128,21 @@ export default async function loadData(
   limit = null,
   offset = null
 ) {
+  if (typeof url === "object") {
+    return _loadData(url); // In this case, url is not actually a URL. We assume that url is an object representing parameters.
+  } else {
+    return _loadData({ url, type, mainElement, timeout, limit, offset });
+  }
+}
+
+async function _loadData({
+  url,
+  type = "json",
+  mainElement = null,
+  timeout = 10 * 60 * 1000,
+  limit = null,
+  offset = null,
+}) {
   const _cacheKey = JSON.stringify({ url, type, limit, offset });
   if (cacheKey === _cacheKey) {
     return cache;
