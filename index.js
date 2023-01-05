@@ -10,8 +10,9 @@ async function downloadImg(_svg, format, filename, root) {
   svg.attr("version", 1.1).attr("xmlns", "http://www.w3.org/2000/svg");
 
   let hostStyle = root.querySelector("style").innerHTML;
+  const elementComputedStyle = getComputedStyle(root.host.stanzaInstance.element);
   const styleWithCustom = hostStyle.match(/(--)[^\,\:\)]+/g).map(name => {
-    return { [name]: getComputedStyle(root.host.stanzaInstance.element).getPropertyValue(name) };
+    return { [name]: elementComputedStyle.getPropertyValue(name) };
     }
   )
 
