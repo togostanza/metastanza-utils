@@ -9,33 +9,18 @@ async function downloadImg(_svg, format, filename, root) {
 
   svg.attr("version", 1.1).attr("xmlns", "http://www.w3.org/2000/svg");
 
-  let style = "";
-  console.log('root.querySelector("style")', root.querySelector("style"));
-  if (root.host && root.querySelector("style")) {
-    style += root
-      .querySelector("style")
-      .innerHTML.replace(/[\r\n]/g, "")
-      .match(/^\s*:host\s*{(.+)}\s*$/)[1];
-  }
-  console.log("root.host", root.host);
+  let hostStyle = root.querySelector("style").innerHTML;
+  const elementComputedStyle = getComputedStyle(root.host.stanzaInstance.element);
+  const styleWithCustom = hostStyle.match(/(--)[^\,\:\)]+/g).map(name => {
+    return { [name]: elementComputedStyle.getPropertyValue(name) };
+    }
+  )
 
-  const outerCode = document
-    .querySelector(".overflow-auto")
-    .innerHTML.replace("<code>", "")
-    .replace("</code>", "");
-  const customizedStyle = outerCode
-    .replaceAll('""', "")
-    .replaceAll("&lt;", "<")
-    .replaceAll("&gt;", ">")
-    .match(/<style>[\s\S]*?<\/style>/);
-  if (customizedStyle) {
-    //when customize styles exist
-    style += customizedStyle[0]
-      .replace("<style>", "")
-      .replace("</style>", "")
-      .replace(/[\r\n]/g, "")
-      .match(/^\s*togostanza-.+\s{\s(.+\s)+}\s*$/)[1];
+  let style = "";
+  for (let styleSheet of styleWithCustom) {
+    style += `${Object.keys(styleSheet).toString()}:${Object.values(styleSheet).toString()}; `;
   }
+
   let link_style = "";
   const link = root.querySelector("link[rel='stylesheet']");
   if (link) {
