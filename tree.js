@@ -2,7 +2,13 @@ import * as d3 from "d3";
 
 export function asTree(
   data,
-  { idKey = "id", parentKey = "parent", childrenKey = "children" } = {}
+  {
+    idKey = "id",
+    parentKey = "parent",
+    childrenKey = "children",
+    labelKey = "label",
+    valueKey = "value",
+  } = {}
 ) {
   // NOTE: If 'children' and 'parent' in the given data are inconsistent, this function returns unexpected results.
   const parentMap = new Map();
@@ -31,7 +37,14 @@ export function asTree(
       }
     }
 
-    return { id, data: node, parent, children };
+    return {
+      id,
+      data: node,
+      parent,
+      children,
+      label: node[labelKey],
+      value: node[valueKey],
+    };
   });
 }
 
