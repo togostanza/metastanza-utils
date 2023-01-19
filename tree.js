@@ -53,11 +53,11 @@ export function asD3Hierarchy(
   { rootId = undefined, pseudoRootId = "PSEUDO_ROOT" } = {}
 ) {
   let subTree = tree;
-  if (rootId === undefined) {
+  if (rootId !== undefined) {
     subTree = selectSubTree(tree, rootId);
   }
 
-  const rootCandidates = tree.filter((node) => node.parent === undefined);
+  const rootCandidates = subTree.filter((node) => node.parent === undefined);
   if (rootCandidates.length > 1) {
     const pseudoRoot = {
       id: pseudoRootId,
