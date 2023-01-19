@@ -48,8 +48,28 @@ export function asTree(
   });
 }
 
-export function asD3Hierarchy(tree, rootId) {
-  const subTree = selectSubTree(tree, rootId);
+export function asD3Hierarchy(
+  tree,
+  { rootId = undefined, pseudoRootId = "PSEUDO_ROOT" } = {}
+) {
+  let subTree = tree;
+  if (rootId === undefined) {
+    subTree = selectSubTree(tree, rootId);
+  }
+
+  const rootCandidates = tree.filter((node) => node.parent === undefined);
+  if (rootCandidates.length > 1) {
+    const pseudoRoot = {
+      id: pseudoRootId,
+      children: rootCandidates.map((node) => node.id),
+    };
+    for (const node of rootCandidates) {
+      node.parent = pseudoRootId;
+    }
+
+    subTree.push(pseudoRoot);
+  }
+
   const data = d3
     .stratify()
     .id((node) => node.id)
