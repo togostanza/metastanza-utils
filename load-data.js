@@ -1,4 +1,5 @@
 import * as d3 from "d3";
+import { asD3Hierarchy, asTree } from "./tree";
 
 let style;
 
@@ -116,6 +117,26 @@ function getLoader(type) {
   }
 }
 
+class Data extends Array {
+  asTree({
+    idKey = "id",
+    parentKey = "parent",
+    childrenKey = "children",
+    labelKey = "label",
+    valueKey = "value",
+  } = {}) {
+    return new Tree(
+      ...asTree(this, { idKey, parentKey, childrenKey, labelKey, valueKey })
+    );
+  }
+}
+
+class Tree extends Data {
+  asD3Hierarchy({ rootId = undefined, pseudoRootId = "PSEUDO_ROOT" } = {}) {
+    return asD3Hierarchy(this, { rootId, pseudoRootId });
+  }
+}
+
 let cache = null;
 let cacheKey = null;
 
@@ -178,7 +199,7 @@ export default async function loadData(
     clearTimeout(timer);
   }
 
-  return data;
+  return new Data(...(await data));
 }
 
 function getSpinnerCss(bgColor, spinnerColor) {

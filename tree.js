@@ -63,6 +63,7 @@ export function asD3Hierarchy(
       id: pseudoRootId,
       children: rootCandidates.map((node) => node.id),
     };
+    // TODO Stop making destructive node changes.
     for (const node of rootCandidates) {
       node.parent = pseudoRootId;
     }
