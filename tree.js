@@ -39,7 +39,6 @@ export function asTree(
 
     return {
       id,
-      data: node,
       parent,
       children,
       label: node[labelKey],
