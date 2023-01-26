@@ -1,5 +1,6 @@
 import * as d3 from "d3";
 import { asD3Hierarchy, asTree } from "./lib/tree";
+import { asGraph } from "./lib/graph";
 
 let style;
 
@@ -158,11 +159,18 @@ export class Data {
   asGraph({
     nodeIdKey = "id",
     nodeLabelKey = "label",
+    nodeGroupKey = "group",
     sourceKey = "source",
     targetKey = "target",
   } = {}) {
     return new Graph(
-      asGraph(this.data, { nodeIdKey, nodeLabelKey, sourceKey, targetKey })
+      asGraph(this.data, {
+        nodeIdKey,
+        nodeLabelKey,
+        nodeGroupKey,
+        sourceKey,
+        targetKey,
+      })
     );
   }
 }
@@ -173,7 +181,15 @@ class Tree extends Data {
   }
 }
 
-class Graph extends Data {}
+class Graph extends Data {
+  get nodes() {
+    return this.data.nodes;
+  }
+
+  get links() {
+    return this.data.links;
+  }
+}
 
 let cache = null;
 let cacheKey = null;
