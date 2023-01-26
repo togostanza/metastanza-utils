@@ -157,10 +157,13 @@ export class Data {
 
   asGraph({
     nodeIdKey = "id",
+    nodeLabelKey = "label",
     sourceKey = "source",
     targetKey = "target",
   } = {}) {
-    return new Graph(asGraph(this.data, { nodeIdKey, sourceKey, targetKey }));
+    return new Graph(
+      asGraph(this.data, { nodeIdKey, nodeLabelKey, sourceKey, targetKey })
+    );
   }
 }
 
