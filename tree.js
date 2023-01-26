@@ -51,10 +51,9 @@ export function asD3Hierarchy(
   tree,
   { rootId = undefined, pseudoRootId = "PSEUDO_ROOT" } = {}
 ) {
-  let subTree = tree;
-  if (rootId !== undefined) {
-    subTree = selectSubTree(tree, rootId);
-  }
+  const subTree = structuredClone(
+    rootId !== undefined ? selectSubTree(tree, rootId) : tree
+  );
 
   const rootCandidates = subTree.filter((node) => node.parent === undefined);
   if (rootCandidates.length > 1) {
@@ -62,7 +61,6 @@ export function asD3Hierarchy(
       id: pseudoRootId,
       children: rootCandidates.map((node) => node.id),
     };
-    // TODO Stop making destructive node changes.
     for (const node of rootCandidates) {
       node.parent = pseudoRootId;
     }
