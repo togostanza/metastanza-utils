@@ -117,7 +117,26 @@ function getLoader(type) {
   }
 }
 
-class Data extends Array {
+export class Data {
+  static async load(
+    url,
+    {
+      type = "json",
+      mainElement = null,
+      timeout = 10 * 60 * 1000,
+      limit = null,
+      offset = null,
+    } = {}
+  ) {
+    return new Data(
+      await loadData(url, type, mainElement, timeout, limit, offset)
+    );
+  }
+
+  constructor(data) {
+    this.data = data;
+  }
+
   asTree({
     idKey = "id",
     parentKey = "parent",
@@ -126,16 +145,32 @@ class Data extends Array {
     valueKey = "value",
   } = {}) {
     return new Tree(
-      ...asTree(this, { idKey, parentKey, childrenKey, labelKey, valueKey })
+      asTree(this.data, {
+        idKey,
+        parentKey,
+        childrenKey,
+        labelKey,
+        valueKey,
+      })
     );
+  }
+
+  asGraph({
+    nodeIdKey = "id",
+    sourceKey = "source",
+    targetKey = "target",
+  } = {}) {
+    return new Graph(asGraph(this.data, { nodeIdKey, sourceKey, targetKey }));
   }
 }
 
 class Tree extends Data {
   asD3Hierarchy({ rootId = undefined, pseudoRootId = "PSEUDO_ROOT" } = {}) {
-    return asD3Hierarchy(this, { rootId, pseudoRootId });
+    return asD3Hierarchy(this.data, { rootId, pseudoRootId });
   }
 }
+
+class Graph extends Data {}
 
 let cache = null;
 let cacheKey = null;
@@ -199,7 +234,7 @@ export default async function loadData(
     clearTimeout(timer);
   }
 
-  return new Data(...(await data));
+  return data;
 }
 
 function getSpinnerCss(bgColor, spinnerColor) {
