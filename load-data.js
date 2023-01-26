@@ -1,5 +1,5 @@
 import * as d3 from "d3";
-import { asD3Hierarchy, asTree } from "./tree";
+import { asD3Hierarchy, asTree } from "./lib/tree";
 
 let style;
 
