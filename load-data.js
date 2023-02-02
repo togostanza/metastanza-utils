@@ -1,10 +1,12 @@
-import * as d3 from "d3";
+import { select } from "d3-selection";
+import "d3-transition";
+import { csv, tsv, text } from "d3-fetch";
 
 let style;
 
 export function showLoadingIcon(element) {
   if (element.offsetHeight < 30) {
-    d3.select(element).transition().duration(100).style("min-height", "30px");
+    select(element).transition().duration(100).style("min-height", "30px");
   }
 
   const css = (key) => getComputedStyle(element).getPropertyValue(key);
@@ -20,8 +22,7 @@ export function showLoadingIcon(element) {
   );
   element.getRootNode().appendChild(style);
 
-  const container = d3
-    .select(element)
+  const container = select(element)
     .append("div")
     .classed("metastanza-loading-icon-div", true)
     .attr("id", "metastanza-loading-icon-div");
@@ -40,13 +41,12 @@ export function showLoadingIcon(element) {
 
 export function hideLoadingIcon(element) {
   style?.remove();
-  d3.select(element).select("#metastanza-loading-icon-div").remove();
+  select(element).select("#metastanza-loading-icon-div").remove();
 }
 
 function displayApiError(element, error) {
-  d3.select(element).select(".metastanza-error-message-div").remove();
-  const p = d3
-    .select(element)
+  select(element).select(".metastanza-error-message-div").remove();
+  const p = select(element)
     .append("div")
     .attr("class", "metastanza-error-message-div")
     .append("p")
@@ -101,11 +101,11 @@ async function loadElasticsearch(url, requestInit) {
 function getLoader(type) {
   switch (type) {
     case "text":
-      return withAcceptHeader(d3.text, "text/plain");
+      return withAcceptHeader(text, "text/plain");
     case "tsv":
-      return withAcceptHeader(d3.tsv, "text/tab-separated-values");
+      return withAcceptHeader(tsv, "text/tab-separated-values");
     case "csv":
-      return withAcceptHeader(d3.csv, "text/csv");
+      return withAcceptHeader(csv, "text/csv");
     case "sparql-results-json":
       return withAcceptHeader(loadSPARQL, "application/sparql-results+json");
     case "elasticsearch":

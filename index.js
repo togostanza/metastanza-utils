@@ -1,24 +1,27 @@
-import * as d3 from "d3";
+import { select } from "d3-selection";
 import { stringify as csvStringify } from "csv-stringify/browser/esm/sync";
 import { format as formatDate } from "date-fns";
 
 async function downloadImg(_svg, format, filename, root) {
   let url, img, canvas, context;
   const pngZoom = 2; // png resolution rate
-  const svg = d3.select(_svg);
+  const svg = select(_svg);
 
   svg.attr("version", 1.1).attr("xmlns", "http://www.w3.org/2000/svg");
 
   let hostStyle = root.querySelector("style").innerHTML;
-  const elementComputedStyle = getComputedStyle(root.host.stanzaInstance.element);
-  const styleWithCustom = hostStyle.match(/(--)[^\,\:\)]+/g).map(name => {
+  const elementComputedStyle = getComputedStyle(
+    root.host.stanzaInstance.element
+  );
+  const styleWithCustom = hostStyle.match(/(--)[^\,\:\)]+/g).map((name) => {
     return { [name]: elementComputedStyle.getPropertyValue(name) };
-    }
-  )
+  });
 
   let style = "";
   for (let styleSheet of styleWithCustom) {
-    style += `${Object.keys(styleSheet).toString()}:${Object.values(styleSheet).toString()}; `;
+    style += `${Object.keys(styleSheet).toString()}:${Object.values(
+      styleSheet
+    ).toString()}; `;
   }
 
   let link_style = "";
@@ -43,7 +46,7 @@ async function downloadImg(_svg, format, filename, root) {
       url = canvas.node().toDataURL("image/png");
     }
 
-    const a = d3.select("body").append("a");
+    const a = select("body").append("a");
     a.attr("class", "downloadLink")
       .attr("download", filename)
       .attr("href", url)
@@ -77,8 +80,7 @@ async function downloadImg(_svg, format, filename, root) {
     img.src = "data:image/svg+xml;utf8," + encodeURIComponent(string);
     img.addEventListener("load", aLinkClickDL, false);
 
-    canvas = d3
-      .select("body")
+    canvas = select("body")
       .append("canvas")
       .attr("width", w * pngZoom)
       .attr("height", h * pngZoom)
