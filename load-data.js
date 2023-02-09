@@ -144,6 +144,10 @@ export class Data {
     nodeChildrenKey = "children",
     nodeLabelKey = "label",
     nodeValueKey = "value",
+    nodeGroupKey = "group",
+    nodeColorKey = "color",
+    nodeOrderKey = "order",
+    nodeDescriptionKey = "description",
   } = {}) {
     return new Tree(
       asTree(this.data, {
@@ -152,6 +156,10 @@ export class Data {
         nodeChildrenKey,
         nodeLabelKey,
         nodeValueKey,
+        nodeGroupKey,
+        nodeColorKey,
+        nodeOrderKey,
+        nodeDescriptionKey,
       })
     );
   }
