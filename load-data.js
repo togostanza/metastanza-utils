@@ -174,6 +174,12 @@ export class Data {
     nodeValueKey = "value",
     edgeSourceKey = "source",
     edgeTargetKey = "target",
+    edgeColorKey = "color",
+    edgeDescriptionKey = "description",
+    edgeGroupKey = "group",
+    edgeLabelKey = "label",
+    edgeOrderKey = "order",
+    edgeValueKey = "value",
   } = {}) {
     return new Graph(
       asGraph(this.data, {
@@ -186,6 +192,12 @@ export class Data {
         nodeValueKey,
         edgeSourceKey,
         edgeTargetKey,
+        edgeColorKey,
+        edgeDescriptionKey,
+        edgeGroupKey,
+        edgeLabelKey,
+        edgeOrderKey,
+        edgeValueKey,
       })
     );
   }
