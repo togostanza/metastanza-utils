@@ -180,6 +180,18 @@ export class Data {
     edgeLabelKey = "label",
     edgeOrderKey = "order",
     edgeValueKey = "value",
+    sourceNodeColorKey = "source_color",
+    sourceNodeDescriptionKey = "source_description",
+    sourceNodeGroupKey = "source_group",
+    sourceNodeLabelKey = "source_label",
+    sourceNodeOrderKey = "source_order",
+    sourceNodeValueKey = "source_value",
+    targetNodeColorKey = "target_color",
+    targetNodeDescriptionKey = "target_description",
+    targetNodeGroupKey = "target_group",
+    targetNodeLabelKey = "target_label",
+    targetNodeOrderKey = "target_order",
+    targetNodeValueKey = "target_value",
   } = {}) {
     return new Graph(
       asGraph(this.data, {
@@ -198,6 +210,18 @@ export class Data {
         edgeLabelKey,
         edgeOrderKey,
         edgeValueKey,
+        sourceNodeColorKey,
+        sourceNodeDescriptionKey,
+        sourceNodeGroupKey,
+        sourceNodeLabelKey,
+        sourceNodeOrderKey,
+        sourceNodeValueKey,
+        targetNodeColorKey,
+        targetNodeDescriptionKey,
+        targetNodeGroupKey,
+        targetNodeLabelKey,
+        targetNodeOrderKey,
+        targetNodeValueKey,
       })
     );
   }
