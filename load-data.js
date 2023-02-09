@@ -142,40 +142,48 @@ export class Data {
     nodeIdKey = "id",
     nodeParentKey = "parent",
     nodeChildrenKey = "children",
-    nodeLabelKey = "label",
-    nodeValueKey = "value",
-    nodeGroupKey = "group",
     nodeColorKey = "color",
-    nodeOrderKey = "order",
     nodeDescriptionKey = "description",
+    nodeGroupKey = "group",
+    nodeLabelKey = "label",
+    nodeOrderKey = "order",
+    nodeValueKey = "value",
   } = {}) {
     return new Tree(
       asTree(this.data, {
         nodeIdKey,
         nodeParentKey,
         nodeChildrenKey,
-        nodeLabelKey,
-        nodeValueKey,
-        nodeGroupKey,
         nodeColorKey,
-        nodeOrderKey,
         nodeDescriptionKey,
+        nodeGroupKey,
+        nodeLabelKey,
+        nodeOrderKey,
+        nodeValueKey,
       })
     );
   }
 
   asGraph({
     nodeIdKey = "id",
-    nodeLabelKey = "label",
+    nodeColorKey = "color",
+    nodeDescriptionKey = "description",
     nodeGroupKey = "group",
+    nodeLabelKey = "label",
+    nodeOrderKey = "order",
+    nodeValueKey = "value",
     edgeSourceKey = "source",
     edgeTargetKey = "target",
   } = {}) {
     return new Graph(
       asGraph(this.data, {
         nodeIdKey,
-        nodeLabelKey,
+        nodeColorKey,
+        nodeDescriptionKey,
         nodeGroupKey,
+        nodeLabelKey,
+        nodeOrderKey,
+        nodeValueKey,
         edgeSourceKey,
         edgeTargetKey,
       })
