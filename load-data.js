@@ -139,19 +139,19 @@ export class Data {
   }
 
   asTree({
-    idKey = "id",
-    parentKey = "parent",
-    childrenKey = "children",
-    labelKey = "label",
-    valueKey = "value",
+    nodeIdKey = "id",
+    nodeParentKey = "parent",
+    nodeChildrenKey = "children",
+    nodeLabelKey = "label",
+    nodeValueKey = "value",
   } = {}) {
     return new Tree(
       asTree(this.data, {
-        idKey,
-        parentKey,
-        childrenKey,
-        labelKey,
-        valueKey,
+        nodeIdKey,
+        nodeParentKey,
+        nodeChildrenKey,
+        nodeLabelKey,
+        nodeValueKey,
       })
     );
   }
@@ -160,16 +160,16 @@ export class Data {
     nodeIdKey = "id",
     nodeLabelKey = "label",
     nodeGroupKey = "group",
-    sourceKey = "source",
-    targetKey = "target",
+    edgeSourceKey = "source",
+    edgeTargetKey = "target",
   } = {}) {
     return new Graph(
       asGraph(this.data, {
         nodeIdKey,
         nodeLabelKey,
         nodeGroupKey,
-        sourceKey,
-        targetKey,
+        edgeSourceKey,
+        edgeTargetKey,
       })
     );
   }
