@@ -49,6 +49,8 @@ export class Data {
   }
 
   asGraph({
+    nodesKey = "nodes",
+    edgesKey = "edges",
     nodeIdKey = "id",
     nodeColorKey = "color",
     nodeDescriptionKey = "description",
@@ -79,6 +81,8 @@ export class Data {
   } = {}) {
     return new Graph(
       asGraph(this.data, {
+        nodesKey,
+        edgesKey,
         nodeIdKey,
         nodeColorKey,
         nodeDescriptionKey,
@@ -122,7 +126,7 @@ class Graph extends Data {
     return this.data.nodes;
   }
 
-  get links() {
-    return this.data.links;
+  get edges() {
+    return this.data.edges;
   }
 }
