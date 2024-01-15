@@ -157,6 +157,7 @@ export default async function loadData(
       showLoadingIcon(mainElement);
     }
     data = await loader(u, requestInit);
+    addTogostanzaId(data);
 
     cache = data;
     cacheKey = _cacheKey;
@@ -179,6 +180,14 @@ export default async function loadData(
   }
 
   return data;
+}
+
+function addTogostanzaId(data) {
+  if (Array.isArray(data)) {
+    data.forEach((d, i) => {
+      d.__togostanza_id__ = i;
+    });
+  }
 }
 
 function getSpinnerCss(bgColor, spinnerColor) {
