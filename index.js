@@ -135,12 +135,21 @@ const downloadBlob = (blob, fileName) => {
   URL.revokeObjectURL(link.href);
 };
 
+function excludeTogostanzaId(data) {
+  if (!Array.isArray(data)) return data;
+
+  return data.map((item) => {
+    const {__togostanza_id__, ...rest} = item;
+    return rest;
+  });
+}
+
 export function downloadJSONMenuItem(stanza, filenamePrefix, data) {
   return {
     type: "item",
     label: "Download JSON",
     handler: () => {
-      const blob = new Blob([JSON.stringify(data, null, "  ")], {
+      const blob = new Blob([JSON.stringify(excludeTogostanzaId(data), null, "  ")], {
         type: "application/json",
       });
       downloadBlob(blob, filenameWithTimestamp(filenamePrefix) + ".json");
@@ -153,7 +162,7 @@ export function downloadCSVMenuItem(stanza, filenamePrefix, data) {
     type: "item",
     label: "Download CSV",
     handler: () => {
-      const csv = csvStringify(data, { header: true, bom: true });
+      const csv = csvStringify(excludeTogostanzaId(data), { header: true, bom: true });
       const blob = new Blob([csv], { type: "text/csv" });
       downloadBlob(blob, filenameWithTimestamp(filenamePrefix) + ".csv");
     },
@@ -165,7 +174,7 @@ export function downloadTSVMenuItem(stanza, filenamePrefix, data) {
     type: "item",
     label: "Download TSV",
     handler: () => {
-      const tsv = csvStringify(data, {
+      const tsv = csvStringify(excludeTogostanzaId(data), {
         header: true,
         bom: true,
         delimiter: "\t",
